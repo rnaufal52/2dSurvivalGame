@@ -118,7 +118,7 @@ const login = async (req, res) => {
             res.json({
                 code: 200,
                 status: "OK",
-                message: 'Registration is successful',
+                message: 'Login is successful',
                 data: {
                     accessToken: accessToken,
                     accessTokenExpiresAt: currentTimestamp + accessTokenExpiresIn, // Waktu kedaluwarsa access token

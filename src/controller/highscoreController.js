@@ -3,42 +3,6 @@ import { nanoid } from "nanoid"
 import * as dotenv from 'dotenv'
 
 dotenv.config()
-// create highscore
-// const CreateHighScore = async (req, res) => {
-//     const { body } = req
-//     const user_id = req.user_id
-//     const highscore_id = nanoid(16)
-//     const dates = new Date()
-//     try {
-//         const [check] = await getHighScoreModelByToken(user_id)
-//         if (check.length === 0) {
-//             const [data] = await createHighScoreModel(body, highscore_id, user_id, dates)
-
-//             const responseData = { ...req.body }
-//             res.json({
-//                 code: 200,
-//                 status: "OK",
-//                 message: 'Create highscore is successful',
-//                 data: responseData,
-//             })
-//         }
-//         else {
-//             res.status(404).json({
-//                 code: 400,
-//                 status: 'BAD REQUEST',
-//                 message: 'Your highscore data is not more than 1',
-//                 data: null,
-//             })
-//         }
-//     } catch (error) {
-//         res.status(500).json({
-//             code: 500,
-//             status: 'INTERNAL SERVER ERROR',
-//             message: error,
-//             data: null,
-//         })
-//     }
-// }
 
 // show highscore
 const GetHighScore = async (req, res) => {
@@ -116,7 +80,6 @@ const updateHighScore = async (req, res) => {
 }
 
 export {
-    // CreateHighScore,
     GetHighScore,
     updateHighScore
 }
