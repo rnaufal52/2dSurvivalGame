@@ -1,13 +1,27 @@
+'use strict'
 import { registrationAuthModel, loginAuthModel, logoutAuthModel, deleteAccount } from '../models/authModel.js'
 import { createHighScoreModel, deleteHighScore } from '../models/highscoreModel.js'
 import { createProgressModel, getProgressModelByToken, DeleteProgress } from '../models/progressGameModel.js'
 import bcrypt from 'bcrypt'
 import { nanoid } from "nanoid"
 import * as dotenv from 'dotenv'
-import fs from 'fs'
+import { Storage } from '@google-cloud/storage'
+import path from 'path';
 import jwt from 'jsonwebtoken'
 
 dotenv.config()
+
+const pathKey = path.resolve('./serviceaccountkey.json')
+
+// cloud storage connect
+const storage = new Storage({
+    projectId: 'apigameastralpursuit',
+    keyFilename: pathKey
+})
+
+// nama bucket
+const bucketName = 'astral-pursuit-progressfile'
+
 
 // registrasi
 const registration = async (req, res) => {
@@ -16,7 +30,7 @@ const registration = async (req, res) => {
     const highscore_id = nanoid(16)
     const progressgame_id = nanoid(16)
     // ganti nanti dengan link cloud
-    const savefile = `public/savefile/inventorySave.json`
+    const savefile = `https://storage.cloud.google.com/astral-pursuit-progressfile/inventorySave.json`
     const dates = new Date()
     const highscore = "0"
     try {
@@ -172,14 +186,26 @@ const refresh = async (req, res) => {
 const deleteAccountUser = async (req, res) => {
     const user_id = req.user_id
     try {
-
         // hapus data progress
         // ambil data progress kemudian hapus
         const [previousProgress] = await getProgressModelByToken(user_id);
         // Cek apakah ada progress yang perlu dihapus
         if (previousProgress && previousProgress[0] && previousProgress[0].savefile &&
-            previousProgress[0].savefile != "public/savefile/inventorySave.json") {
-            await fs.promises.unlink(previousProgress[0].savefile);
+            previousProgress[0].savefile != "https://storage.cloud.google.com/astral-pursuit-progressfile/inventorySave.json") {
+
+            const previousFileUrl = previousProgress[0].savefile;
+            // Mendapatkan nama file dari URL
+            const fileName = previousFileUrl.split('/').pop()
+
+            // Menghapus file dari Google Cloud Storage
+            const bucket = storage.bucket(bucketName)
+            const file = bucket.file(fileName)
+            try {
+                await file.delete()
+                console.log('File deleted successfully')
+            } catch (error) {
+                console.error('Error deleting file:', error);
+            }
         }
         const [datass] = await DeleteProgress(user_id)
 
