@@ -7,7 +7,7 @@ import auth from '../middleware/authentication.js'
 // panggil controller highscore
 import {
     GetProgress,
-    UpdateProgress
+    UpdateProgress,
 } from '../controller/progressController.js'
 
 const router = express.Router()
