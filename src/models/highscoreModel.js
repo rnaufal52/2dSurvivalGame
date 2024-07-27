@@ -15,7 +15,9 @@ const getHighScoreModel = (user_id) => {
         SELECT
             u.username,
             h.score,
-            (SELECT COUNT(*) + 1 FROM highscore WHERE score > h.score) AS ranking
+            (SELECT COUNT(*) + 1 
+             FROM highscore 
+             WHERE CAST(score AS UNSIGNED) > CAST(h.score AS UNSIGNED)) AS ranking
         FROM
             highscore h
         JOIN
@@ -27,6 +29,7 @@ const getHighScoreModel = (user_id) => {
 
     return dbPool.execute(SQLQuery, values);
 }
+
 
 
 // get highscore by token
@@ -52,18 +55,19 @@ const getTopHighScoreModel = () => {
         SELECT
             u.username,
             h.score,
-            (SELECT COUNT(*) + 1 FROM highscore WHERE score > h.score) AS ranking
+            (SELECT COUNT(*) + 1 FROM highscore WHERE CAST(score AS UNSIGNED) > CAST(h.score AS UNSIGNED)) AS ranking
         FROM
             highscore h
         JOIN
             user u ON h.user_id = u.user_id
         ORDER BY
-            h.score DESC
+            CAST(h.score AS UNSIGNED) DESC
         LIMIT
             5;
     `;
     return dbPool.execute(SQLQuery);
 }
+
 
 
 // put highscore
