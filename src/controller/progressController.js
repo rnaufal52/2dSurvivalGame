@@ -16,7 +16,7 @@ const storage = new Storage({
 })
 
 // nama bucket
-const bucketName = 'astral-pursuit-progressfile'
+const bucketName = 'astral-pursuit-progressfiles'
 
 // show progress
 const GetProgress = async (req, res) => {
